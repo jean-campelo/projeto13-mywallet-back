@@ -2,20 +2,13 @@ import express from "express";
 import cors from "cors";
 import joi from "joi";
 import bcrypt from "bcrypt";
-import { MongoClient } from "mongodb";
-import dotenv from "dotenv";
-dotenv.config();
+
+import db from "./db.js";
 
 const server = express();
 server.use(cors());
 server.use(express.json());
 const port = 5000;
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-
-let db;
-mongoClient.connect().then(() => {
-  db = mongoClient.db("MyWallet");
-});
 
 const newUserSchema = joi.object({
   name: joi.string().required().empty(" "),
