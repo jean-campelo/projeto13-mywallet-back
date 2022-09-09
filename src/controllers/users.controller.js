@@ -94,6 +94,8 @@ async function accessAccount(req, res) {
 
 async function registerNewDebit(req, res) {
   const { type, value } = req.body;
+  const { authorization } = req.headers;
+  const token = authorization.replace("Bearer ", "");
 
   const registerIsValid = newRegisterDebit.validate(req.body, {
     abortEarly: false,
