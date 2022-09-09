@@ -108,6 +108,15 @@ async function registerNewDebit(req, res) {
     return res.send({ message: errors }).sendStatus(422);
   }
 
+  try {
+    const userIsLogged = await db.collection("sessions").findOne({ token });
+    if (!userIsLogged) {
+      res.sendStatus(409).send({ error: "User is not logged" });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+
   res.sendStatus(201);
 }
 
