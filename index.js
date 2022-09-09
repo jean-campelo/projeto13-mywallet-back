@@ -23,19 +23,26 @@ const newUserSchema = joi.object({
   confirmPassword: joi.ref("password"),
 });
 
-server.post("/sign-up", (req, res) => {
+server.post("/sign-up", async (req, res) => {
   const { name, email, password } = req.body;
 
   const validationNewUser = newUserSchema.validate(req.body, {
     abortEarly: false,
   });
-
+  
   if (validationNewUser.error) {
     const errors = validationNewUser.error.details.map(
       (detail) => detail.message
     );
     return res.send(errors).sendStatus(422);
   }
+
+  const userAlreadyRegistered = await db.collection("users").findOne({ email });
+   if (userAlreadyRegistered) {
+    res.send("User already registered").sendStatus(422);
+    return;
+   }
+
 
   res.sendStatus(201);
 });
