@@ -1,6 +1,7 @@
 import joi from "joi";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import db from "../database/db.js";
+import { v4 as uuid } from "uuid";
 
 const newUserSchema = joi.object({
   name: joi.string().required().empty(" "),
@@ -12,9 +13,9 @@ const newUserSchema = joi.object({
 const userSchema = joi.object({
   email: joi.string().required().email(),
   password: joi.string().required().empty(" "),
-})
+});
 
-async function registerNewUser (req, res) {
+async function registerNewUser(req, res) {
   const { name, email, password } = req.body;
 
   const validationNewUser = newUserSchema.validate(req.body, {
@@ -52,17 +53,15 @@ async function registerNewUser (req, res) {
   }
 
   res.sendStatus(201);
-};
+}
 
-async function accessAccount (req, res) {
+async function accessAccount(req, res) {
   const { email, password } = req.body;
-  
-  const userValidation = userSchema.validate(req.body, {abortEarly: false})
+
+  const userValidation = userSchema.validate(req.body, { abortEarly: false });
 
   if (userValidation.error) {
-    const errors = userValidation.error.details.map(
-      (detail) => detail.message
-    );
+    const errors = userValidation.error.details.map((detail) => detail.message);
     return res.send(errors).sendStatus(422);
   }
 
@@ -74,17 +73,17 @@ async function accessAccount (req, res) {
     );
 
     if (!passwordIsValid) {
-      return res.sendStatus(422).send({error: "Invalid email or password"})
+      return res.sendStatus(422).send({ error: "Invalid email or password" });
     }
 
+    //new token for session
+    const token = uuid();
+    db.collection("sessions").insertOne({ userId: userRegistered._id, token });
   } catch (error) {
     return res.sendStatus(500);
   }
 
-  //const passwordIsValid = bcrypt.compareSync()
-
-
   res.sendStatus(200);
-};
+}
 
 export { registerNewUser, accessAccount };
