@@ -1,14 +1,6 @@
-import express from "express";
-import cors from "cors";
 import joi from "joi";
-import bcrypt from "bcrypt";
-
-import db from "./db.js";
-
-const server = express();
-server.use(cors());
-server.use(express.json());
-const port = 5000;
+import bcrypt from 'bcrypt';
+import db from "../database/db.js";
 
 const newUserSchema = joi.object({
   name: joi.string().required().empty(" "),
@@ -17,7 +9,7 @@ const newUserSchema = joi.object({
   confirmPassword: joi.ref("password"),
 });
 
-server.post("/sign-up", async (req, res) => {
+async function registerNewUser (req, res) {
   const { name, email, password } = req.body;
 
   const validationNewUser = newUserSchema.validate(req.body, {
@@ -55,6 +47,6 @@ server.post("/sign-up", async (req, res) => {
   }
 
   res.sendStatus(201);
-});
+};
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+export { registerNewUser };
