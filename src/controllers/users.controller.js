@@ -66,7 +66,25 @@ async function accessAccount (req, res) {
     return res.send(errors).sendStatus(422);
   }
 
-  res.send(200);
+  try {
+    const userRegistered = await db.collection("users").findOne({ email });
+    const passwordIsValid = bcrypt.compareSync(
+      password,
+      userRegistered.passwordHash
+    );
+
+    if (!passwordIsValid) {
+      return res.sendStatus(422).send({error: "Invalid email or password"})
+    }
+
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+
+  //const passwordIsValid = bcrypt.compareSync()
+
+
+  res.sendStatus(200);
 };
 
 export { registerNewUser, accessAccount };
