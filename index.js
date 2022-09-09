@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import joi from "joi";
+import bcrypt from "bcrypt";
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 dotenv.config();
@@ -29,7 +30,7 @@ server.post("/sign-up", async (req, res) => {
   const validationNewUser = newUserSchema.validate(req.body, {
     abortEarly: false,
   });
-  
+
   if (validationNewUser.error) {
     const errors = validationNewUser.error.details.map(
       (detail) => detail.message
@@ -37,12 +38,28 @@ server.post("/sign-up", async (req, res) => {
     return res.send(errors).sendStatus(422);
   }
 
-  const userAlreadyRegistered = await db.collection("users").findOne({ email });
-   if (userAlreadyRegistered) {
-    res.send("User already registered").sendStatus(422);
-    return;
-   }
+  try {
+    const userAlreadyRegistered = await db
+      .collection("users")
+      .findOne({ email });
+    if (userAlreadyRegistered) {
+      res.send("User already registered").sendStatus(422);
+      return;
+    }
+  } catch (error) {
+    return res.sendStatus(500);
+  }
 
+  try {
+    //register new user
+    db.collection("users").insertOne({
+      name,
+      email,
+      passwordHash: bcrypt.hashSync(password, 10),
+    });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
 
   res.sendStatus(201);
 });
