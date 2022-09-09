@@ -15,6 +15,11 @@ const userSchema = joi.object({
   password: joi.string().required().empty(" "),
 });
 
+const newRegisterDebit = joi.object({
+  type: joi.string().required().valid("debit"),
+  value: joi.number().required(),
+});
+
 async function registerNewUser(req, res) {
   const { name, email, password } = req.body;
 
@@ -26,7 +31,7 @@ async function registerNewUser(req, res) {
     const errors = validationNewUser.error.details.map(
       (detail) => detail.message
     );
-    return res.send({message: errors}).sendStatus(422);
+    return res.send({ message: errors }).sendStatus(422);
   }
 
   try {
@@ -84,7 +89,24 @@ async function accessAccount(req, res) {
     return res.sendStatus(500);
   }
 
-  res.sendStatus(200);
+  res.sendStatus(201);
 }
 
-export { registerNewUser, accessAccount };
+async function registerNewDebit(req, res) {
+  const { type, value } = req.body;
+
+  const registerIsValid = newRegisterDebit.validate(req.body, {
+    abortEarly: false,
+  });
+
+  if (registerIsValid.error) {
+    const errors = registerIsValid.error.details.map(
+      (detail) => detail.message
+    );
+    return res.send({ message: errors }).sendStatus(422);
+  }
+
+  res.sendStatus(201);
+}
+
+export { registerNewUser, accessAccount, registerNewDebit };
