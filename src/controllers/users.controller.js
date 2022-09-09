@@ -49,4 +49,11 @@ async function registerNewUser (req, res) {
   res.sendStatus(201);
 };
 
-export { registerNewUser };
+async function accessAccount (req, res) {
+  const { email, password } = req.body;
+  
+
+  res.send(200);
+};
+
+export { registerNewUser, accessAccount };
