@@ -9,6 +9,11 @@ const newUserSchema = joi.object({
   confirmPassword: joi.ref("password"),
 });
 
+const userSchema = joi.object({
+  email: joi.string().required().email(),
+  password: joi.string().required().empty(" "),
+})
+
 async function registerNewUser (req, res) {
   const { name, email, password } = req.body;
 
@@ -52,6 +57,14 @@ async function registerNewUser (req, res) {
 async function accessAccount (req, res) {
   const { email, password } = req.body;
   
+  const userValidation = userSchema.validate(req.body, {abortEarly: false})
+
+  if (userValidation.error) {
+    const errors = userValidation.error.details.map(
+      (detail) => detail.message
+    );
+    return res.send(errors).sendStatus(422);
+  }
 
   res.send(200);
 };
