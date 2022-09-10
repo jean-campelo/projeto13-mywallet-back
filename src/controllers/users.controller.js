@@ -16,8 +16,8 @@ const userSchema = joi.object({
   password: joi.string().required().empty(" "),
 });
 
-const newRegisterDebit = joi.object({
-  type: joi.string().required().valid("debit"),
+const newRegister = joi.object({
+  type: joi.string().required().valid("debit", "credit"),
   value: joi.number().required(),
 });
 
@@ -93,12 +93,12 @@ async function accessAccount(req, res) {
   res.sendStatus(201);
 }
 
-async function registerNewDebit(req, res) {
+async function registerNewTransaction(req, res) {
   const { type, value } = req.body;
   const { authorization } = req.headers;
   const token = authorization.replace("Bearer ", "");
 
-  const registerIsValid = newRegisterDebit.validate(req.body, {
+  const registerIsValid = newRegister.validate(req.body, {
     abortEarly: false,
   });
 
@@ -128,4 +128,4 @@ async function registerNewDebit(req, res) {
   res.sendStatus(201);
 }
 
-export { registerNewUser, accessAccount, registerNewDebit };
+export { registerNewUser, accessAccount, registerNewTransaction };
