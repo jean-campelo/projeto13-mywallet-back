@@ -43,6 +43,8 @@ async function registerNewTransaction(req, res) {
 }
 
 async function getTransactions(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization.replace("Bearer ", "");
   
 }
 
