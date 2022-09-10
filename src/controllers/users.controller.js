@@ -34,7 +34,7 @@ async function registerNewUser(req, res) {
       .collection("users")
       .findOne({ email });
     if (userAlreadyRegistered) {
-      res.status(422).send({error: "User already registered"});
+      res.status(422).send({message: "User already registered"});
       return;
     }
   } catch (error) {
