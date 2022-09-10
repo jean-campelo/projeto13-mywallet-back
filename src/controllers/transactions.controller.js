@@ -45,12 +45,16 @@ async function registerNewTransaction(req, res) {
 async function getTransactions(req, res) {
   const { authorization } = req.headers;
   const token = authorization.replace("Bearer ", "");
-  
+
   try {
     const userIsLogged = await db.collection("sessions").findOne({ token });
     if (!userIsLogged) {
       res.sendStatus(409).send({ error: "User is not logged" });
-    } 
+    }
+    const transactionsUser = await db
+      .collection("transactions")
+      .find({ userId: userIsLogged._id })
+      .toArray();
   } catch (error) {
     res.send(error);
   }
