@@ -2,6 +2,7 @@ import joi from "joi";
 import bcrypt from "bcrypt";
 import db from "../database/db.js";
 import { v4 as uuid } from "uuid";
+import dayjs from "dayjs";
 
 const newUserSchema = joi.object({
   name: joi.string().required().empty(" "),
@@ -113,6 +114,13 @@ async function registerNewDebit(req, res) {
     if (!userIsLogged) {
       res.sendStatus(409).send({ error: "User is not logged" });
     }
+    const date = dayjs().locale("pt").format("DD/MM");
+    db.collection("transactions").insertOne({
+      userId: userIsLogged._id,
+      type,
+      value,
+      date,
+    });
   } catch (error) {
     res.send(error);
   }
