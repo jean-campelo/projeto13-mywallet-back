@@ -42,4 +42,8 @@ async function registerNewTransaction(req, res) {
   res.sendStatus(201);
 }
 
-export { registerNewTransaction };
+async function getTransactions(req, res) {
+  
+}
+
+export { registerNewTransaction, getTransactions };

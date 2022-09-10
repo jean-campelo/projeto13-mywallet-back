@@ -6,7 +6,10 @@ import {
   accessAccount,
 } from "./controllers/users.controller.js";
 
-import { registerNewTransaction } from "./controllers/transactions.controller.js";
+import {
+  registerNewTransaction,
+  getTransactions,
+} from "./controllers/transactions.controller.js";
 
 const server = express();
 server.use(cors());
@@ -16,5 +19,6 @@ const port = 5000;
 server.post("/sign-up", registerNewUser);
 server.post("/sign-in", accessAccount);
 server.post("/new-register", registerNewTransaction);
+server.get("/transactions", getTransactions);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
