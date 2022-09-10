@@ -55,9 +55,11 @@ async function getTransactions(req, res) {
       .collection("transactions")
       .find({ userId: userIsLogged._id })
       .toArray();
+      res.send(transactionsUser);
   } catch (error) {
     res.send(error);
   }
+  res.send(201)
 }
 
 export { registerNewTransaction, getTransactions };
