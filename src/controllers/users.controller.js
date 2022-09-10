@@ -2,7 +2,6 @@ import joi from "joi";
 import bcrypt from "bcrypt";
 import db from "../database/db.js";
 import { v4 as uuid } from "uuid";
-import dayjs from "dayjs";
 
 const newUserSchema = joi.object({
   name: joi.string().required().empty(" "),
@@ -14,11 +13,6 @@ const newUserSchema = joi.object({
 const userSchema = joi.object({
   email: joi.string().required().email(),
   password: joi.string().required().empty(" "),
-});
-
-const newRegister = joi.object({
-  type: joi.string().required().valid("debit", "credit"),
-  value: joi.number().required(),
 });
 
 async function registerNewUser(req, res) {
@@ -93,39 +87,4 @@ async function accessAccount(req, res) {
   res.sendStatus(201);
 }
 
-async function registerNewTransaction(req, res) {
-  const { type, value } = req.body;
-  const { authorization } = req.headers;
-  const token = authorization.replace("Bearer ", "");
-
-  const registerIsValid = newRegister.validate(req.body, {
-    abortEarly: false,
-  });
-
-  if (registerIsValid.error) {
-    const errors = registerIsValid.error.details.map(
-      (detail) => detail.message
-    );
-    return res.send({ message: errors }).sendStatus(422);
-  }
-
-  try {
-    const userIsLogged = await db.collection("sessions").findOne({ token });
-    if (!userIsLogged) {
-      res.sendStatus(409).send({ error: "User is not logged" });
-    }
-    const date = dayjs().locale("pt").format("DD/MM");
-    db.collection("transactions").insertOne({
-      userId: userIsLogged._id,
-      type,
-      value,
-      date,
-    });
-  } catch (error) {
-    res.send(error);
-  }
-
-  res.sendStatus(201);
-}
-
-export { registerNewUser, accessAccount, registerNewTransaction };
+export { registerNewUser, accessAccount };
