@@ -46,6 +46,14 @@ async function getTransactions(req, res) {
   const { authorization } = req.headers;
   const token = authorization.replace("Bearer ", "");
   
+  try {
+    const userIsLogged = await db.collection("sessions").findOne({ token });
+    if (!userIsLogged) {
+      res.sendStatus(409).send({ error: "User is not logged" });
+    } 
+  } catch (error) {
+    res.send(error);
+  }
 }
 
 export { registerNewTransaction, getTransactions };
