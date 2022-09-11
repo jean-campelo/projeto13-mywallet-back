@@ -26,7 +26,7 @@ async function registerNewUser(req, res) {
     const errors = validationNewUser.error.details.map(
       (detail) => detail.message
     );
-    return res.send({ message: errors }).sendStatus(422);
+    return res.status(422).send({ message: errors });
   }
 
   try {
