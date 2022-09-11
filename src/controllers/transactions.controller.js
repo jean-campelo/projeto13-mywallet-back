@@ -36,7 +36,7 @@ async function registerNewTransaction(req, res) {
       date,
     });
   } catch (error) {
-    res.send(error);
+    res.send({message: error});
   }
 
   res.sendStatus(201);
