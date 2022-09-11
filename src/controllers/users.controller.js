@@ -83,8 +83,8 @@ async function accessAccount(req, res) {
 
     //new token for session
     const token = uuid();
-    db.collection("sessions").insertOne({ userId: userRegistered._id, token });
-    res.send({ name: userRegistered.name, token });
+    await db.collection("sessions").insertOne({ userId: userRegistered._id, token });
+    res.send( {name: userRegistered.name, token} );
   } catch (error) {
     return res.sendStatus(500);
   }
