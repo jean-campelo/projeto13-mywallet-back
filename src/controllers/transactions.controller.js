@@ -30,7 +30,7 @@ async function registerNewTransaction(req, res) {
     }
     const date = dayjs().locale("pt").format("DD/MM");
     db.collection("transactions").insertOne({
-      userId: userIsLogged._id,
+      userId: userIsLogged.userId,
       type,
       value,
       date,
@@ -53,7 +53,7 @@ async function getTransactions(req, res) {
     }
     const transactionsUser = await db
       .collection("transactions")
-      .find({ userId: userIsLogged._id })
+      .find({ userId: userIsLogged.userId })
       .toArray();
       res.send(transactionsUser);
   } catch (error) {
