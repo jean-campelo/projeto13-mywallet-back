@@ -78,7 +78,7 @@ async function accessAccount(req, res) {
     );
 
     if (!passwordIsValid) {
-      return res.sendStatus(422).send({ error: "Invalid email or password" });
+      return res.status(422).send({ message: "email or password incorrects" });
     }
 
     //new token for session
