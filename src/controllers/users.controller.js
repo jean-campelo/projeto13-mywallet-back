@@ -62,7 +62,7 @@ async function accessAccount(req, res) {
 
   if (userValidation.error) {
     const errors = userValidation.error.details.map((detail) => detail.message);
-    return res.send(errors).sendStatus(422);
+    return res.status(422).send({ message: errors });
   }
 
   try {
