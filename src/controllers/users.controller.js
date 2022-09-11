@@ -67,6 +67,11 @@ async function accessAccount(req, res) {
 
   try {
     const userRegistered = await db.collection("users").findOne({ email });
+    
+    if(!userRegistered) {
+      return res.status(422).send({message: "email or password incorrects"})
+    }
+
     const passwordIsValid = bcrypt.compareSync(
       password,
       userRegistered.passwordHash
