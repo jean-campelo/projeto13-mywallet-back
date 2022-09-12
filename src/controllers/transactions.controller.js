@@ -5,10 +5,11 @@ import dayjs from "dayjs";
 const newRegister = joi.object({
   type: joi.string().required().valid("debit", "credit"),
   value: joi.number().required(),
+  description: joi.string().required().empty(" "),
 });
 
 async function registerNewTransaction(req, res) {
-  const { type, value } = req.body;
+  const { type, value, description } = req.body;
   const { authorization } = req.headers;
   const token = authorization.replace("Bearer ", "");
 
@@ -34,6 +35,7 @@ async function registerNewTransaction(req, res) {
       type,
       value,
       date,
+      description,
     });
   } catch (error) {
     res.send({message: error});
